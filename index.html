@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f7f4"><meta name="description" content="Carnet personnel de suivi intestinal et des facteurs possibles."><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/icon-192.png"><title>Mon suivi intestinal</title>
+<style>
+:root{--bg:#f5f7f4;--card:#fff;--ink:#23312d;--muted:#64736d;--accent:#376b5a;--soft:#e5efe9;--line:#dce5df}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:600px;margin:auto;padding:18px 15px 36px}.top{padding:8px 2px 14px}h1{font-size:27px;line-height:1.12;margin:5px 0 8px;letter-spacing:-.5px}h2{font-size:18px;margin:0 0 13px}p{margin:5px 0;color:var(--muted)}.date-label{color:var(--accent);font-size:13px;font-weight:700;text-transform:capitalize}.card{background:var(--card);border:1px solid var(--line);border-radius:19px;padding:17px;margin:12px 0}.label{display:block;font-weight:700;margin:16px 0 8px}.label:first-child{margin-top:0}.hint{font-size:12px;color:var(--muted)}.choices{display:flex;gap:7px;flex-wrap:wrap}.choice{position:relative}.choice input{position:absolute;opacity:0}.choice-text{display:block;border:1px solid var(--line);border-radius:11px;padding:10px 11px;background:white;text-align:center;cursor:pointer;min-height:44px;user-select:none;-webkit-tap-highlight-color:transparent}.choice input:checked+.choice-text{background:var(--soft);border-color:var(--accent);color:var(--accent);font-weight:700}.choice input:focus-visible+.choice-text{outline:2px solid var(--accent);outline-offset:2px}.choice input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.choice .emoji{display:block;font-size:20px;margin-bottom:4px}.scale{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:4px}.scale .choice{min-width:0}.scale .choice-text{padding:10px 0;min-width:0;font-size:13px;border-radius:9px}.symptoms .choice{flex:1 1 30%}.symptoms .choice span{height:100%;padding:12px 7px}.symptoms .emoji{display:block;font-size:20px;margin-bottom:4px}input[type=date],textarea,select{width:100%;font:inherit;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}textarea{resize:vertical;min-height:64px}.btn{border:0;border-radius:13px;padding:13px 15px;font:inherit;font-weight:750;cursor:pointer}.primary{background:var(--accent);color:#fff;width:100%;margin-top:15px}.secondary{background:var(--soft);color:var(--accent)}.status{font-size:13px;color:var(--accent);min-height:18px;margin-top:8px}.prompt{background:#f7faf7;border:1px solid var(--line);border-radius:13px;padding:12px;margin-top:14px}.prompt strong{display:block;margin-bottom:5px}.row{display:flex;gap:8px;flex-wrap:wrap}.row .btn{flex:1}.entry{padding:12px 0;border-top:1px solid var(--line)}.entry:first-child{border-top:0}.entryhead{display:flex;justify-content:space-between;gap:8px;font-weight:700}.pill{font-size:12px;background:var(--soft);color:var(--accent);border-radius:20px;padding:4px 8px;white-space:nowrap}.barrow{display:grid;grid-template-columns:74px 1fr 34px;align-items:center;gap:8px;margin:10px 0;font-size:12px}.bar{height:8px;border-radius:10px;background:#edf1ee;overflow:hidden}.fill{height:100%;background:var(--accent);border-radius:10px}.empty{color:var(--muted);font-size:14px}.small{font-size:12px}.chart-svg{display:block;width:100%;height:auto}.chart-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:6px 0}.cause-row{display:grid;grid-template-columns:minmax(92px,1fr) 2fr 38px;gap:8px;align-items:center;margin:11px 0;font-size:12px}.cause-bar{height:12px;border-radius:8px;background:#edf1ee;overflow:hidden}.cause-fill{height:100%;background:var(--accent);border-radius:8px}.cause-meta{font-size:12px;color:var(--muted);margin:4px 0 10px}.notice{font-size:12px;background:#fff8e9;border-color:#eee0c2}.section-kicker{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
+</style></head>
+<body><main>
+<header class="top"><div class="date-label" id="todayLabel"></div><h1>Mon suivi intestinal</h1><p>Une minute chaque soir pour comprendre ce qui influence ton confort.</p></header>
+<div id="installArea" style="display:none;margin:0 0 12px"><button class="btn secondary" id="installBtn" style="width:100%">Installer sur mon écran d’accueil</button></div>
+<section class="card">
+<div class="section-kicker">01 · Mon bilan quotidien</div><h2>Comment s'est passée ma journée ?</h2>
+<label class="label" for="entryDate">Date</label><input id="entryDate" type="date">
+<div class="label">Douleur abdominale</div><div class="scale" id="painScale"></div><p class="hint">0 = aucune douleur · 10 = douleur maximale imaginable</p>
+<div class="label">Ballonnements</div><div class="scale" id="bloatScale"></div><p class="hint">0 = aucun · 10 = très intenses</p>
+<div class="label">Gaz / flatulences</div><div class="scale" id="gasScale"></div><p class="hint">0 = aucun ou habituel · 10 = très gênants</p>
+<div class="label">Mon ressenti général</div><div class="choices" id="moodChoices"></div>
+<div class="label">Impact sur ma journée</div><div class="choices" id="impactChoices"></div>
+<div class="label">Transit (facultatif)</div><div class="choices" id="transitChoices"></div>
+</section>
+<section class="card">
+<div class="section-kicker">02 · Chercher des déclencheurs</div><h2>Qu'est-ce qui a pu jouer aujourd'hui ?</h2><p class="hint">Coche seulement ce qui te semble pertinent. Ce sont des pistes, pas des causes confirmées.</p>
+<div class="label">Alimentation / boissons</div><div class="choices symptoms" id="foodChoices"></div>
+<div class="label">Contexte</div><div class="choices symptoms" id="contextChoices"></div>
+<label class="label" for="notes">Précisions (facultatif)</label><textarea id="notes" placeholder="Ex. repas inhabituel, heure des symptômes, intensité après le déjeuner…"></textarea>
+<button class="btn primary" id="saveBtn">Enregistrer ma journée</button><div class="status" id="status" aria-live="polite"></div>
+<div class="prompt"><strong>Petit conseil</strong><p class="hint">Pour repérer un motif, note les mêmes éléments chaque jour. Un lien observé ne prouve pas qu'un aliment ou le stress est responsable ; évite les exclusions alimentaires importantes sans conseil médical.</p></div>
+</section>
+<section class="card"><div class="section-kicker">03 · Voir les tendances</div><h2>Évolution de la douleur</h2><p class="hint">Score quotidien sur 10 · Les journées sans saisie ne sont pas interpolées.</p><div id="painChart" style="width:100%;overflow:hidden"></div><div id="trend"></div><p class="hint">Les scores permettent de visualiser les variations, pas de poser un diagnostic.</p></section>
+<section class="card"><div class="section-kicker">04 · Recherche de facteurs associés</div><h2>Facteurs souvent notés</h2><p class="hint">Nombre de journées où chaque facteur a été coché, avec la douleur moyenne ces jours-là. Une association ne prouve pas une cause.</p><div id="causesChart"></div><div id="causesDetails"></div></section>
+<section class="card"><h2>Historique</h2><div class="row" style="margin-bottom:10px"><button class="btn secondary" id="exportBtn">Exporter en CSV</button><button class="btn secondary" id="importBtn">Importer un CSV</button></div><input id="csvFile" type="file" accept=".csv,text/csv" style="display:none"><p class="hint">L’import ajoute les journées du fichier à ton historique. Si une date existe déjà, la ligne importée la remplace.</p><div class="row" style="margin-bottom:10px"><button class="btn secondary" id="clearBtn">Effacer les données</button></div><div id="importStatus" class="status" aria-live="polite"></div><div id="history"></div><p class="small">Les entrées sont enregistrées localement dans ce navigateur, sur cet appareil. Elles ne sont pas envoyées à un serveur. Exporte une sauvegarde régulièrement.</p></section>
+<section class="card notice"><strong>Important :</strong> ce carnet ne remplace pas un avis médical. Consulte rapidement en cas de douleur intense ou brutale, ventre très dur, sang abondant dans les selles, vomissements persistants, malaise ou fièvre importante.</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);const now=new Date();const iso=d=>{const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`};$('entryDate').value=iso(now);$('todayLabel').textContent=now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function make(id,items,name,multiple=false,emoji=false){$(id).innerHTML=items.map(it=>{let v=Array.isArray(it)?it[0]:it,t=Array.isArray(it)?it[1]:it,em=emoji&&Array.isArray(it)&&it[2]?`<span class="emoji">${esc(it[2])}</span>`:'';return `<label class="choice"><input type="${multiple?'checkbox':'radio'}" name="${name}" value="${esc(v)}"><span class="choice-text">${em}${esc(t)}</span></label>`}).join('')}
+// Les labels natifs rendent toute la surface des choix tactile et activable.
+const scale=Array.from({length:11},(_,i)=>[String(i),String(i)]);make('painScale',scale,'pain');make('bloatScale',scale,'bloat');make('gasScale',scale,'gas');
+make('moodChoices',[['1','😣 Très mal'],['2','😕 Pas bien'],['3','😐 Moyen'],['4','🙂 Bien'],['5','😊 Très bien']],'mood');
+make('impactChoices',[['0','Aucun'],['1','Léger'],['2','Modéré'],['3','Important']],'impact');
+make('transitChoices',[['habituel','Habituel'],['constipation','Constipation'],['diarrhee','Diarrhée'],['variable','Variable'],['nonnote','Non noté']],'transit');
+make('foodChoices',[['repasCopieux','Repas copieux'],['produitsLaitiers','Produits laitiers'],['legumineuses','Légumineuses'],['alimentsGras','Repas gras'],['boissonsGazeuses','Boissons gazeuses'],['alcool','Alcool'],['cafe','Café'],['edulcorants','Édulcorants'],['aucun','Rien de particulier']],'food',true);
+make('contextChoices',[['stress','Stress'],['sommeil','Mauvais sommeil'],['activite','Activité physique inhabituelle'],['regles','Cycle menstruel (si pertinent)'],['medicaments','Médicament / changement'],['aucunContexte','Rien de particulier']],'context',true);
+let records={};try{records=JSON.parse(localStorage.getItem('suiviIntestinalV2')||'{}')}catch(e){}
+function val(n){return document.querySelector(`input[name="${n}"]:checked`)?.value||''}function vals(n){return [...document.querySelectorAll(`input[name="${n}"]:checked`)].map(e=>e.value)}function set(n,v){document.querySelectorAll(`input[name="${n}"]`).forEach(e=>e.checked=Array.isArray(v)?v.includes(e.value):e.value===String(v??''))}
+function load(){let r=records[$('entryDate').value];document.querySelectorAll('input[type=radio],input[type=checkbox]').forEach(e=>e.checked=false);$('notes').value='';if(r){['pain','bloat','gas','mood','impact','transit'].forEach(k=>set(k,r[k]));set('food',r.food||[]);set('context',r.context||[]);$('notes').value=r.notes||''}$('status').textContent=''}
+$('entryDate').addEventListener('change',load);
+$('saveBtn').addEventListener('click',()=>{let date=$('entryDate').value;if(!date||['pain','bloat','gas'].some(k=>val(k)==='')){$('status').textContent='Renseigne les trois scores de symptômes (0 à 10) avant d’enregistrer.';return}
+records[date]={date,pain:+val('pain'),bloat:+val('bloat'),gas:+val('gas'),mood:val('mood'),impact:val('impact'),transit:val('transit'),food:vals('food'),context:vals('context'),notes:$('notes').value.trim()};try{localStorage.setItem('suiviIntestinalV2',JSON.stringify(records));$('status').textContent='Journée enregistrée.';render()}catch(e){$('status').textContent='Enregistrement impossible dans ce navigateur.'}});
+const fmt=d=>new Date(d+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});const names={repasCopieux:'Repas copieux',produitsLaitiers:'Produits laitiers',legumineuses:'Légumineuses',alimentsGras:'Repas gras',boissonsGazeuses:'Boissons gazeuses',alcool:'Alcool',cafe:'Café',edulcorants:'Édulcorants',aucun:'Rien de particulier',stress:'Stress',sommeil:'Mauvais sommeil',activite:'Activité physique inhabituelle',regles:'Cycle menstruel',medicaments:'Médicament / changement',aucunContexte:'Rien de particulier'};
+function render(){
+let arr=Object.values(records).sort((a,b)=>a.date.localeCompare(b.date));
+let last=arr.slice(-14);
+$('trend').innerHTML=last.length?last.slice(-7).reverse().map(r=>`<div class="barrow"><span>${fmt(r.date)}</span><div class="bar"><div class="fill" style="width:${r.pain*10}%"></div></div><strong>${r.pain}/10</strong></div>`).join(''):'<div class="empty">Tes scores apparaîtront ici après quelques jours.</div>';
+drawPainChart(last);
+drawCausesChart(arr);
+$('history').innerHTML=arr.slice().reverse().map(r=>`<div class="entry"><div class="entryhead"><span>${fmt(r.date)}</span><span class="pill">Douleur ${r.pain}/10</span></div><p>Ballonnements ${r.bloat}/10 · Gaz ${r.gas}/10</p><p>Transit : ${esc(({habituel:'Habituel',constipation:'Constipation',diarrhee:'Diarrhée',variable:'Variable',nonnote:'Non noté'})[r.transit]||'—')} · Impact : ${esc(({0:'Aucun',1:'Léger',2:'Modéré',3:'Important'})[r.impact]||'—')}</p>${[...(r.food||[]),...(r.context||[])].length?`<p>Pistes notées : ${[...(r.food||[]),...(r.context||[])].map(x=>esc(names[x]||x)).join(', ')}</p>`:''}${r.notes?`<p>${esc(r.notes)}</p>`:''}<button class="btn secondary" style="margin-top:6px;padding:8px 10px;font-size:13px" onclick="editDate('${r.date}')">Modifier</button></div>`).join('')||'<div class="empty">Aucune journée enregistrée pour le moment.</div>';
+}
+function drawPainChart(data){
+ const el=$('painChart');
+ if(!data.length){el.innerHTML='<div class="empty">Enregistre plusieurs journées pour afficher le graphique.</div>';return}
+ const W=340,H=180,L=30,R=10,T=12,B=34,iw=W-L-R,ih=H-T-B;
+ const x=i=>L+(data.length===1?iw/2:i*iw/(data.length-1));
+ const y=v=>T+ih-(v/10)*ih;
+ let svg=`<svg class="chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Graphique de la douleur quotidienne sur 10">`;
+ for(let v=0;v<=10;v+=2){svg+=`<line x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}" stroke="#dce5df" stroke-width="1"/><text x="${L-7}" y="${y(v)+4}" text-anchor="end" font-size="10" fill="#64736d">${v}</text>`}
+ if(data.length>1){svg+=`<polyline fill="none" stroke="#376b5a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${data.map((r,i)=>`${x(i)},${y(r.pain)}`).join(' ')}"/>`}
+ data.forEach((r,i)=>{svg+=`<circle cx="${x(i)}" cy="${y(r.pain)}" r="3.5" fill="#376b5a"><title>${fmt(r.date)} : douleur ${r.pain}/10</title></circle>`;if(i===0||i===data.length-1||i===Math.floor((data.length-1)/2)){svg+=`<text x="${x(i)}" y="${H-12}" text-anchor="middle" font-size="10" fill="#64736d">${esc(r.date.slice(5).replace('-','/'))}</text>`}});
+ svg+='</svg>';el.innerHTML=svg;
+}
+function drawCausesChart(arr){
+ const el=$('causesChart'),details=$('causesDetails');
+ const labels={...names};
+ const all=[...Object.keys(names)];
+ const stats=all.map(key=>{const days=arr.filter(r=>[...(r.food||[]),...(r.context||[])].includes(key));return {key,label:labels[key]||key,count:days.length,avg:days.length?days.reduce((s,r)=>s+r.pain,0)/days.length:null}});
+ const shown=stats.filter(s=>s.count>0).sort((a,b)=>b.count-a.count||b.avg-a.avg);
+ if(!shown.length){el.innerHTML='<div class="empty">Les facteurs cochés apparaîtront ici après tes premières saisies.</div>';details.innerHTML='';return}
+ const max=Math.max(...shown.map(s=>s.count),1);
+ el.innerHTML=shown.map(s=>`<div class="cause-row"><span>${esc(s.label)}</span><div class="cause-bar"><div class="cause-fill" style="width:${s.count/max*100}%"></div></div><strong>${s.count} j</strong></div><div class="cause-meta">Douleur moyenne les jours cochés : ${s.avg.toFixed(1)}/10</div>`).join('');
+ details.innerHTML=`<p class="hint">Calculé sur ${arr.length} journée(s) enregistrée(s). Pour chaque facteur, la moyenne porte uniquement sur les jours où tu l'as coché. Les facteurs « rien de particulier » sont aussi affichés si tu les as sélectionnés.</p>`;
+}
+function editDate(d){$('entryDate').value=d;load();window.scrollTo({top:0,behavior:'smooth'})}
+$('exportBtn').onclick=()=>{let a=Object.values(records).sort((x,y)=>x.date.localeCompare(y.date));if(!a.length){$('status').textContent='Aucune donnée à exporter.';return}let cols=['date','douleur_0_10','ballonnements_0_10','gaz_0_10','humeur','impact','transit','pistes_alimentation','contexte','notes'];let q=x=>'"'+String(x??'').replace(/"/g,'""')+'"';let lines=[cols.join(';'),...a.map(r=>[r.date,r.pain,r.bloat,r.gas,r.mood,r.impact,r.transit,(r.food||[]).map(x=>names[x]||x).join(', '),(r.context||[]).map(x=>names[x]||x).join(', '),r.notes].map(q).join(';'))];let blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),el=document.createElement('a');el.href=url;el.download='mon-suivi-intestinal.csv';el.click();URL.revokeObjectURL(url)};
+
+// Import CSV exporté par cette application (séparateur point-virgule, UTF-8).
+$('importBtn').onclick=()=>{$('csvFile').click()};
+function parseCSV(text){
+  text=text.replace(/^\uFEFF/,'');
+  const rows=[];let row=[],field='',quoted=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i],n=text[i+1];
+    if(quoted){if(c==='"'&&n==='"'){field+='"';i++}else if(c==='"'){quoted=false}else field+=c}
+    else if(c==='"'){quoted=true}
+    else if(c===';'){row.push(field);field=''}
+    else if(c==='\n'){row.push(field);rows.push(row);row=[];field=''}
+    else if(c!=='\r'){field+=c}
+  }
+  if(field.length||row.length){row.push(field);rows.push(row)}
+  return rows.filter(r=>r.some(v=>v.trim()!==''));
+}
+function splitList(s){return String(s||'').split(',').map(x=>x.trim()).filter(Boolean)}
+const reverseNames=Object.fromEntries(Object.entries(names).map(([k,v])=>[v.toLocaleLowerCase('fr-FR'),k]));
+function importRows(text){
+  const rows=parseCSV(text);if(rows.length<2)throw new Error('Le fichier CSV semble vide ou incomplet.');
+  const headers=rows[0].map(h=>h.trim().toLocaleLowerCase('fr-FR'));
+  const idx=Object.fromEntries(headers.map((h,i)=>[h,i]));
+  if(idx.date===undefined)throw new Error('Colonne « date » introuvable. Importe un CSV exporté depuis cette application.');
+  let count=0;
+  for(const cols of rows.slice(1)){
+    const get=k=>idx[k]===undefined?'':String(cols[idx[k]]??'').trim();
+    const date=get('date');if(!/^\d{4}-\d{2}-\d{2}$/.test(date))continue;
+    const pain=Number(get('douleur_0_10')),bloat=Number(get('ballonnements_0_10')),gas=Number(get('gaz_0_10'));
+    if(![pain,bloat,gas].every(v=>Number.isFinite(v)&&v>=0&&v<=10))continue;
+    const mapList=s=>splitList(s).map(v=>reverseNames[v.toLocaleLowerCase('fr-FR')]||v);
+    records[date]={date,pain,bloat,gas,mood:get('humeur'),impact:get('impact'),transit:get('transit'),food:mapList(get('pistes_alimentation')),context:mapList(get('contexte')),notes:get('notes')};
+    count++;
+  }
+  if(!count)throw new Error('Aucune ligne valide trouvée. Vérifie que le CSV provient de Mon suivi intestinal.');
+  localStorage.setItem('suiviIntestinalV2',JSON.stringify(records));return count;
+}
+$('csvFile').addEventListener('change',async ev=>{
+  const file=ev.target.files&&ev.target.files[0];if(!file)return;
+  try{const count=importRows(await file.text());render();load();$('importStatus').textContent=`Import terminé : ${count} journée(s) ajoutée(s) ou mise(s) à jour.`}
+  catch(err){$('importStatus').textContent=err.message||'Impossible de lire ce fichier CSV.'}
+  ev.target.value='';
+});
+
+$('clearBtn').onclick=()=>{if(confirm('Effacer définitivement toutes les journées enregistrées ?')){records={};localStorage.removeItem('suiviIntestinalV2');render();load()}};load();render();
+// Installation PWA : le bouton n’apparaît que si le navigateur propose l’installation.
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',ev=>{ev.preventDefault();deferredInstallPrompt=ev;$('installArea').style.display='block'});
+$('installBtn').addEventListener('click',async()=>{if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;$('installArea').style.display='none'});
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}))}
+</script></body></html>

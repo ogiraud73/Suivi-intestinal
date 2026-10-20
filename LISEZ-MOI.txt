@@ -1,0 +1,27 @@
+# Mon suivi intestinal — version installable
+
+## Ce que contient le dossier
+- `index.html` : l’application, avec suivi quotidien et import/export CSV
+- `manifest.webmanifest` : métadonnées d’installation
+- `service-worker.js` : cache hors ligne
+- Synthèse graphique : évolution de la douleur sur les 14 dernières journées consignées et facteurs cochés avec leur fréquence et la douleur moyenne associée.
+- `icons/` : icônes de l’application
+
+## Installation
+Une PWA nécessite une adresse HTTPS (ou localhost). Un fichier ouvert directement depuis le téléphone (`file://`) ne peut pas activer le service worker ni offrir une installation complète.
+
+### Méthode simple : GitHub Pages
+1. Crée ou connecte-toi à un compte GitHub.
+2. Crée un nouveau dépôt, par exemple `mon-suivi-intestinal`.
+3. Téléverse **le contenu** de ce dossier (pas seulement le ZIP) à la racine du dépôt.
+4. Dans Settings → Pages, choisis le déploiement depuis la branche principale et le dossier `/ (root)`.
+5. Attends la publication et ouvre l’adresse HTTPS fournie par GitHub Pages.
+6. Sur iPhone : ouvre cette adresse dans Safari → Partager → Sur l’écran d’accueil.
+   Sur Android : ouvre dans Chrome → menu ⋮ → Installer l’application / Ajouter à l’écran d’accueil.
+
+## Données et CSV
+Les données restent dans le stockage local du navigateur de l’appareil. Le cache hors ligne permet de rouvrir l’interface après le premier chargement, mais il ne remplace pas une sauvegarde. Utilise Exporter en CSV régulièrement.
+Le bouton Importer un CSV accepte les fichiers exportés par cette application. Les entrées importées fusionnent avec l’historique ; pour une date déjà présente, la donnée importée remplace cette journée.
+
+## Confidentialité
+Si tu héberges cette application sur un service statique, les fichiers de l’application sont servis depuis ce service, mais les entrées de santé restent côté navigateur. Ne partage pas ton URL si tu souhaites garder l’accès discret. Le stockage local n’est pas chiffré et n’est pas synchronisé entre appareils.
